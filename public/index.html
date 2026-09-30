@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sunday School Management System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Login Screen -->
+        <div id="loginScreen" class="screen">
+            <div class="login-container">
+                <h1>Sunday School Management</h1>
+                <p class="subtitle">Attendance & Marks System</p>
+
+                <form id="loginForm" onsubmit="login(event)">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" placeholder="your@email.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" placeholder="••••••••" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-large">Login</button>
+                </form>
+
+                <div class="demo-note">
+                    <p><strong>Demo Account:</strong></p>
+                    <p>Email: admin@school.com</p>
+                    <p>Password: admin123</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Dashboard -->
+        <div id="dashboard" class="screen" style="display:none;">
+            <header class="header">
+                <h1>Sunday School Management</h1>
+                <div class="header-right">
+                    <span id="currentUser" class="user-name"></span>
+                    <button class="btn btn-small" onclick="logout()">Logout</button>
+                </div>
+            </header>
+
+            <nav class="main-menu">
+                <button class="menu-btn" onclick="showSection('home')">🏠 Home</button>
+                <button class="menu-btn" onclick="showSection('attendance')">📋 Attendance</button>
+                <button class="menu-btn" onclick="showSection('marks')">📊 Marks</button>
+                <button class="menu-btn" onclick="showSection('timetable')">⏰ Timetable</button>
+                <button class="menu-btn" onclick="showSection('manage')">⚙️ Manage</button>
+                <button class="menu-btn" onclick="showSection('reports')">📈 Reports</button>
+            </nav>
+
+            <!-- Home Section -->
+            <section id="home-section" class="content-section">
+                <h2>Welcome to Sunday School Management System</h2>
+                <div class="dashboard-grid">
+                    <div class="dashboard-card" onclick="showSection('attendance')">
+                        <h3>📋 Mark Attendance</h3>
+                        <p>Record attendance for students and teachers</p>
+                    </div>
+                    <div class="dashboard-card" onclick="showSection('marks')">
+                        <h3>📊 Record Marks</h3>
+                        <p>Enter and manage student marks</p>
+                    </div>
+                    <div class="dashboard-card" onclick="showSection('timetable')">
+                        <h3>⏰ View Timetable</h3>
+                        <p>Check class schedules and teacher assignments</p>
+                    </div>
+                    <div class="dashboard-card" onclick="showSection('reports')">
+                        <h3>📈 View Reports</h3>
+                        <p>Check attendance and performance reports</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Attendance Section -->
+            <section id="attendance-section" class="content-section" style="display:none;">
+                <h2>Mark Attendance</h2>
+
+                <div class="form-container">
+                    <div class="form-group">
+                        <label>Select Class:</label>
+                        <select id="attendanceClass" class="input-large" onchange="loadStudentsForAttendance()">
+                            <option value="">-- Choose a Class --</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Select Period:</label>
+                        <select id="attendancePeriod" class="input-large">
+                            <option value="1">Period 1</option>
+                            <option value="2">Period 2</option>
+                            <option value="3">Period 3</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Date:</label>
+                        <input type="date" id="attendanceDate" class="input-large" value="">
+                    </div>
+                </div>
+
+                <div id="attendanceList" class="attendance-table">
+                    <!-- Students will be loaded here -->
+                </div>
+
+                <button class="btn btn-primary btn-large" onclick="saveAttendance()">Save Attendance</button>
+            </section>
+
+            <!-- Marks Section -->
+            <section id="marks-section" class="content-section" style="display:none;">
+                <h2>Record Marks</h2>
+
+                <div class="form-container">
+                    <div class="form-group">
+                        <label>Select Class:</label>
+                        <select id="marksClass" class="input-large" onchange="loadStudentsForMarks()">
+                            <option value="">-- Choose a Class --</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Subject:</label>
+                        <input type="text" id="marksSubject" class="input-large" placeholder="e.g., English, Math, Science">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Test Name:</label>
+                        <input type="text" id="marksTestName" class="input-large" placeholder="e.g., Quiz 1, Midterm">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Total Marks:</label>
+                        <input type="number" id="marksTotalMarks" class="input-large" placeholder="100" value="100">
+                    </div>
+                </div>
+
+                <div id="marksList" class="marks-table">
+                    <!-- Students will be loaded here -->
+                </div>
+
+                <button class="btn btn-primary btn-large" onclick="saveMarks()">Save All Marks</button>
+            </section>
+
+            <!-- Timetable Section -->
+            <section id="timetable-section" class="content-section" style="display:none;">
+                <h2>Timetable</h2>
+
+                <div class="form-container">
+                    <div class="form-group">
+                        <label>Select Class:</label>
+                        <select id="timetableClass" class="input-large" onchange="loadTimetable()">
+                            <option value="">-- All Classes --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="timetableDisplay" class="timetable-grid">
+                    <!-- Timetable will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Manage Section -->
+            <section id="manage-section" class="content-section" style="display:none;">
+                <h2>Manage System</h2>
+
+                <div class="manage-tabs">
+                    <button class="tab-btn active" onclick="showManageTab('teachers')">Teachers</button>
+                    <button class="tab-btn" onclick="showManageTab('classes')">Classes</button>
+                    <button class="tab-btn" onclick="showManageTab('students')">Students</button>
+                    <button class="tab-btn" onclick="showManageTab('timetable-setup')">Setup Timetable</button>
+                </div>
+
+                <!-- Teachers Tab -->
+                <div id="teachers-tab" class="tab-content">
+                    <h3>Add New Teacher</h3>
+                    <div class="form-container">
+                        <div class="form-group">
+                            <label>Name:</label>
+                            <input type="text" id="teacherName" class="input-large">
+                        </div>
+                        <div class="form-group">
+                            <label>Email:</label>
+                            <input type="email" id="teacherEmail" class="input-large">
+                        </div>
+                        <div class="form-group">
+                            <label>Phone:</label>
+                            <input type="tel" id="teacherPhone" class="input-large">
+                        </div>
+                        <div class="form-group">
+                            <label>Password:</label>
+                            <input type="password" id="teacherPassword" class="input-large">
+                        </div>
+                        <button class="btn btn-success" onclick="addTeacher()">Add Teacher</button>
+                    </div>
+
+                    <h3>Teachers List</h3>
+                    <div id="teachersList" class="list-container">
+                        <!-- Teachers will be listed here -->
+                    </div>
+                </div>
+
+                <!-- Classes Tab -->
+                <div id="classes-tab" class="tab-content" style="display:none;">
+                    <h3>Create New Class</h3>
+                    <div class="form-container">
+                        <div class="form-group">
+                            <label>Class Name:</label>
+                            <input type="text" id="className" class="input-large" placeholder="e.g., Class 1, Class 2">
+                        </div>
+                        <div class="form-group">
+                            <label>Class Teacher:</label>
+                            <select id="classTeacher" class="input-large">
+                                <option value="">-- Select a Teacher --</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-success" onclick="addClass()">Create Class</button>
+                    </div>
+
+                    <h3>Classes List</h3>
+                    <div id="classesList" class="list-container">
+                        <!-- Classes will be listed here -->
+                    </div>
+                </div>
+
+                <!-- Students Tab -->
+                <div id="students-tab" class="tab-content" style="display:none;">
+                    <h3>Add New Student</h3>
+                    <div class="form-container">
+                        <div class="form-group">
+                            <label>Name:</label>
+                            <input type="text" id="studentName" class="input-large">
+                        </div>
+                        <div class="form-group">
+                            <label>Class:</label>
+                            <select id="studentClass" class="input-large">
+                                <option value="">-- Select a Class --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Roll Number:</label>
+                            <input type="text" id="studentRoll" class="input-large">
+                        </div>
+                        <div class="form-group">
+                            <label>Parent Contact:</label>
+                            <input type="tel" id="studentContact" class="input-large">
+                        </div>
+                        <button class="btn btn-success" onclick="addStudent()">Add Student</button>
+                    </div>
+
+                    <h3>Students List</h3>
+                    <div id="studentsList" class="list-container">
+                        <!-- Students will be listed here -->
+                    </div>
+                </div>
+
+                <!-- Timetable Setup Tab -->
+                <div id="timetable-setup-tab" class="tab-content" style="display:none;">
+                    <h3>Setup Timetable</h3>
+                    <div class="form-container">
+                        <div class="form-group">
+                            <label>Class:</label>
+                            <select id="ttClass" class="input-large">
+                                <option value="">-- Select a Class --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Teacher:</label>
+                            <select id="ttTeacher" class="input-large">
+                                <option value="">-- Select a Teacher --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Period:</label>
+                            <select id="ttPeriod" class="input-large">
+                                <option value="1">Period 1</option>
+                                <option value="2">Period 2</option>
+                                <option value="3">Period 3</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Day:</label>
+                            <select id="ttDay" class="input-large">
+                                <option value="Monday">Monday</option>
+                                <option value="Tuesday">Tuesday</option>
+                                <option value="Wednesday">Wednesday</option>
+                                <option value="Thursday">Thursday</option>
+                                <option value="Friday">Friday</option>
+                                <option value="Saturday">Saturday</option>
+                                <option value="Sunday">Sunday</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Subject:</label>
+                            <input type="text" id="ttSubject" class="input-large" placeholder="e.g., English, Math">
+                        </div>
+                        <button class="btn btn-success" onclick="addTimetableEntry()">Add Timetable Entry</button>
+                    </div>
+
+                    <h3>Current Timetable</h3>
+                    <div id="timetableSetupList" class="list-container">
+                        <!-- Timetable entries will be listed here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Reports Section -->
+            <section id="reports-section" class="content-section" style="display:none;">
+                <h2>Reports</h2>
+
+                <div class="form-container">
+                    <div class="form-group">
+                        <label>Select Student:</label>
+                        <select id="reportStudent" class="input-large" onchange="loadStudentReport()">
+                            <option value="">-- Select a Student --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="studentReport" class="report-container">
+                    <!-- Report will be displayed here -->
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
